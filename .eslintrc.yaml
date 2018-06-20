@@ -1,0 +1,18 @@
+extends: '@esperecyan'
+
+env:
+    es6: false
+
+globals:
+    REM: true
+    WSH: false
+    Enumerator: false
+    jsyaml: false
+
+rules:
+    no-var: off
+
+    strict: ['warn', 'never']
+    linebreak-style: ['error', 'windows']
+
+    new-cap: off
