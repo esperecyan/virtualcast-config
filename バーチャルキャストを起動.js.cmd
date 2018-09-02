@@ -30,6 +30,12 @@ var OUTPUT_FILE_NAME = 'config.json';
  */
 var INPUT_FILE_NAMES = ['config.yaml', 'config.yml'];
 
+/**
+ * [UTF-8 復号する | Encoding Standard ― 符号化法 標準（日本語訳）]{@link https://triple-underscore.github.io/Encoding-ja.html#utf-8-decode}
+ * @constant {number}
+ */
+var UTF8_BOM_BYTES_LENGTH = 3;
+
 
 /**
  * ニコニ立体からタイトルを取得するときの間隔。
@@ -48,13 +54,57 @@ htmlfile.close();
 var vbOKOnly = 0;
 var vbCritical = 16;
 var ReadOnly = 1;
-var ForReading = 1;
-var ForWriting = 2;
+var adTypeBinary = 1;
+var adSaveCreateOverWrite = 2;
 
 polyfill();
 executeJSYAML();
 
 
+
+/**
+ * 指定したファイルから文字列を取得します。
+ * @param {string} path
+ * @returns {string}
+ */
+function getFileContents(path)
+{
+	var stream = WSH.CreateObject('ADODB.Stream');
+	stream.Charset = 'UTF-8';
+	stream.Open();
+	stream.LoadFromFile(path);
+	var str = stream.ReadText();
+	stream.Close();
+	return str;
+}
+
+/**
+ * 指定したファイルへ文字列を書き込みます。
+ *
+ * ファイルが既に存在する場合は上書きします。
+ * @see [ADODB.Stream で BOM なし UTF-8 のテキストファイルを書き出す ― Corredor]{@link http://neos21.hatenablog.com/entry/2016/03/27/231512}
+ * @param {string} path
+ * @param {string} contents
+ * @returns {void}
+ */
+function putFileContents(path, contents)
+{
+	var trimmerStream = WSH.CreateObject('ADODB.Stream');
+	trimmerStream.Charset = 'UTF-8';
+	trimmerStream.Open();
+	trimmerStream.WriteText(contents);
+	trimmerStream.Position = 0;
+	trimmerStream.Type = adTypeBinary;
+	trimmerStream.Position = UTF8_BOM_BYTES_LENGTH;
+
+	var stream = WSH.CreateObject('ADODB.Stream');
+	stream.Type = adTypeBinary;
+	stream.Open();
+	stream.Write(trimmerStream.Read());
+	trimmerStream.Close();
+	stream.SaveToFile(path, adSaveCreateOverWrite);
+	stream.Close();
+}
 
 /**
  * 指定された値が Object でなければ、エラーメッセージを表示します。
@@ -125,9 +175,7 @@ if (inputFile) {
 		return;
 	}
 
-	var inputStream = FileSystemObject.OpenTextFile(inputFile.Path, ForReading, true);
-	var yaml = inputStream.ReadAll();
-	inputStream.Close();
+	var yaml = getFileContents(inputFile.Path);
 
 	var config;
 	try {
@@ -155,9 +203,7 @@ if (inputFile) {
 		return;
 	}
 
-	var outputStream = FileSystemObject.OpenTextFile(folder.Path + '\\' + OUTPUT_FILE_NAME, ForWriting, true);
-	outputStream.WriteLine(JSON.stringify(config, null, '\t').replace(/\n/g, '\r\n'));
-	outputStream.Close();
+	putFileContents(folder.Path + '\\' + OUTPUT_FILE_NAME, JSON.stringify(config, null, '\t').replace(/\n/g, '\r\n'));
 } else if (outputFile) {
 	// config.json → config.yaml
 	if (folder.Attributes & ReadOnly) {
@@ -170,9 +216,7 @@ if (inputFile) {
 		return;
 	}
 
-	var jsonStream = FileSystemObject.OpenTextFile(outputFile.Path, ForReading, true);
-	var json = jsonStream.ReadAll();
-	jsonStream.Close();
+	var json = getFileContents(outputFile.Path);
 
 	var configJSON;
 	try {
@@ -227,9 +271,7 @@ if (inputFile) {
 			return match + ' # ' + comment;
 		});
 
-	var yamlStream = FileSystemObject.OpenTextFile(INPUT_FILE_NAMES[0], ForWriting, true);
-	yamlStream.WriteLine(yamlString.replace(/\n/g, '\r\n'));
-	yamlStream.Close();
+	putFileContents(INPUT_FILE_NAMES[0], yamlString.replace(/\n/g, '\r\n'));
 } else {
 	Shell.Popup([OUTPUT_FILE_NAME].concat(INPUT_FILE_NAMES).map(function (name) {
 		return '「' + name + '」';
