@@ -9,6 +9,7 @@ EXIT %errorlevel% */
  * @version 1.0.0
  * @license MPL-2.0
  * @author 100ÇÃêl
+ * @see {@link https://github.com/esperecyan/virtualcast-config}
  */
 (function () {
 
