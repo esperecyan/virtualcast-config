@@ -266,7 +266,6 @@ if (inputFile) {
 		.replace(/^cue_card:\n {4}urls:$/m, '$& # カンペで使用する画像のURL')
 		.replace(/^mode: /m, '# 起動モード\n$&')
 		.replace(/^allow_direct_view: /m, '# ダイレクトビューモードで凸を受け入れるかどうか\n$&')
-		.replace(/^( {4})body: /m, '$1# ツイッター投稿時のコメント\n$&')
 		.replace(/^ {8}- ([0-9]+)$/gm, function (match, number) {
 			var url = 'https://3d.nicovideo.jp/works/td' + number;
 			var comment = '<' + url + '>';
