@@ -303,7 +303,11 @@ if (inputFile) {
 	return;
 }
 
-Shell.Run('"' + folder.Path + '\\' + EXE_FILE_NAME + '"');
+var command = '"' + folder.Path + '\\' + EXE_FILE_NAME + '"';
+for (var i = 0, l = WSH.Arguments.length; i < l; i++) {
+	command += ' ' + WSH.Arguments(i);
+}
+Shell.Run(command);
 })();
 
 
