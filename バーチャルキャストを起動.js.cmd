@@ -20,6 +20,12 @@ EXIT %errorlevel% */
 var EXE_FILE_NAME = 'VirtualCast.exe';
 
 /**
+ * config.json の `niconico.charcter_models` に指定できる最大のモデル数。
+ * @constant {string}
+ */
+var MAX_NICONICO_CHARCTER_MODELS_COUNT = 16;
+
+/**
  * 出力先ファイル名。
  * @constant {string}
  */
@@ -202,6 +208,22 @@ if (inputFile) {
 
 	if (!isValidConfig(config, inputFile.Name)) {
 		return;
+	}
+
+	if (typeof config.niconico === 'object' && config.niconico !== null
+		&& Array.isArray(config.niconico.character_models)) {
+		for (var i = 0, l = WSH.Arguments.length; i < l; i++) {
+			if (WSH.Arguments(i).startsWith('--esperecyan-niconico-character-models-offset-16x=')) {
+				var offset = Number.parseInt(
+					WSH.Arguments(i).replace('--esperecyan-niconico-character-models-offset-16x=', '')
+				) * MAX_NICONICO_CHARCTER_MODELS_COUNT;
+				if (config.niconico.character_models.length > offset) {
+					config.niconico.character_models
+						= config.niconico.character_models.concat(config.niconico.character_models.splice(0, offset));
+				}
+				break;
+			}
+		}
 	}
 
 	putFileContents(folder.Path + '\\' + OUTPUT_FILE_NAME, JSON.stringify(config, null, '\t').replace(/\n/g, '\r\n'));
@@ -3022,6 +3044,21 @@ if (!Array.prototype.includes) {
       return false;
     }
   });
+}
+
+/**
+ * @see [String.prototype.startsWith() - JavaScript | MDN]{@link
+ *      https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith#Polyfill}
+ * @license CC0-1.0
+ */
+if (!String.prototype.startsWith) {
+	String.prototype.startsWith = function(search, pos) {
+		return this.substr(!pos || pos < 0 ? 0 : +pos, search.length) === search;
+	};
+}
+
+if (!Number.parseInt) {
+	Number.parseInt = parseInt;
 }
 }
 
