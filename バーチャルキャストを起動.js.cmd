@@ -114,6 +114,21 @@ function putFileContents(path, contents)
 }
 
 /**
+ * 指定されたコマンドライン引数名の値を取得します。
+ * @param {string} name
+ * @returns {string}
+ */
+function getArgument(name)
+{
+	for (var i = 0, l = WSH.Arguments.length; i < l; i++) {
+		if (WSH.Arguments(i).startsWith(name + '=')) {
+			return WSH.Arguments(i).replace(name + '=', '');
+		}
+	}
+	return '';
+}
+
+/**
  * 指定された値が Object でなければ、エラーメッセージを表示します。
  * @param {*} config
  * @param {string} filename
@@ -184,9 +199,9 @@ if (inputFile) {
 
 	var yaml = getFileContents(inputFile.Path);
 
-	var config;
+	var configs;
 	try {
-		config = jsyaml.safeLoad(yaml, {filename: inputFile.Path});
+		configs = jsyaml.safeLoadAll(yaml, null, {filename: inputFile.Path});
 	} catch (exception) {
 		if (exception.name === 'YAMLException') {
 			var errorMessage = '「' + inputFile.Name + '」は壊れています。以下のエラーが発生しました。';
@@ -206,22 +221,35 @@ if (inputFile) {
 		}
 	}
 
+	var config = configs[0];
+	var argument = getArgument('--esperecyan-document-index');
+	if (argument) {
+		var index = Number.parseInt(argument);
+		if (configs.length <= index) {
+			Shell.Popup(
+				inputFile.Name + 'には' + configs.length + '個のYAMLドキュメントが含まれているので、'
+					+ '--esperecyan-document-index には0～' + (configs.length - 1) + 'を指定する必要があります。',
+				0,
+				WSH.ScriptName,
+				vbOKOnly + vbCritical
+			);
+			return;
+		}
+		config = configs[index];
+	}
+
 	if (!isValidConfig(config, inputFile.Name)) {
 		return;
 	}
 
 	if (typeof config.niconico === 'object' && config.niconico !== null
 		&& Array.isArray(config.niconico.character_models)) {
-		for (var i = 0, l = WSH.Arguments.length; i < l; i++) {
-			if (WSH.Arguments(i).startsWith('--esperecyan-niconico-character-models-offset-16x=')) {
-				var offset = Number.parseInt(
-					WSH.Arguments(i).replace('--esperecyan-niconico-character-models-offset-16x=', '')
-				) * MAX_NICONICO_CHARCTER_MODELS_COUNT;
-				if (config.niconico.character_models.length > offset) {
-					config.niconico.character_models
-						= config.niconico.character_models.concat(config.niconico.character_models.splice(0, offset));
-				}
-				break;
+		var argument = getArgument('--esperecyan-niconico-character-models-offset-16x');
+		if (argument) {
+			var offset = Number.parseInt(argument) * MAX_NICONICO_CHARCTER_MODELS_COUNT;
+			if (config.niconico.character_models.length > offset) {
+				config.niconico.character_models
+					= config.niconico.character_models.concat(config.niconico.character_models.splice(0, offset));
 			}
 		}
 	}

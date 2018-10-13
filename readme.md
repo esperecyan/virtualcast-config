@@ -89,6 +89,59 @@ allow_direct_view: true
 
 起動オプション
 --------------
+### `--esperecyan-document-index=[数字]` (0から始まる整数)
+一つのファイル内に複数のYAMLドキュメントが埋め込まれていた場合、読み込むドキュメントを切り替えます。
+
+例:
+
+```yaml
+---
+niconico:
+    character_models:
+        - 32797
+        - 32806
+        - 32813
+--- # コメント
+niconico:
+    character_models:
+        - 40000
+        - 40001
+        - 40023
+---
+niconico:
+    character_models:
+        - 41036
+```
+
+#### `--esperecyan-document-index==0` の場合
+指定しなかった場合と同じ。
+
+```json
+{
+	"niconico": {
+		"character_models": [
+			32797,
+			32806,
+			32813
+		]
+	}
+}
+```
+
+#### `--esperecyan-document-index==1` の場合
+
+```json
+{
+	"niconico": {
+		"character_models": [
+			40000,
+			40001,
+			40023
+		]
+	}
+}
+```
+
 ### `--esperecyan-niconico-character-models-offset-16x=[数字]`
 `niconico.character_models` の順番をズラします。
 
