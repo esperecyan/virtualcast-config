@@ -9,8 +9,8 @@ VirtualCast/config.yaml
 `VirtualCast.exe` があるフォルダに次のような `config.yaml` を置いておくと、
 
 ```yaml
-niconico:
-    character_models: # 利用するVRMモデルのニコニ立体番号
+niconico: # 利用するモデルのニコニ立体番号
+    character_models: # アバター (VRM)
         - 32797 # ニコニ立体ちゃん (VRM) <https://3d.nicovideo.jp/works/td32797>
         - 32947 # 【VRM】まついしゃちょー <https://3d.nicovideo.jp/works/td32947>
         - 36346 # 【VRM】おの副社長 <http://3d.nicovideo.jp/works/td36346>

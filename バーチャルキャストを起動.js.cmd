@@ -288,13 +288,18 @@ if (inputFile) {
 
 	var timeoutOccured = false;
 	var yamlString = jsyaml.safeDump(configJSON, {indent: 4, lineWidth: -1})
-		.replace(/^niconico:\n {4}character_models:$/m, '$& # 利用するVRMモデルのニコニ立体番号')
+		.replace(/^niconico:$/m, '$& # 利用するモデルのニコニ立体番号')
+		.replace(/^ {4}character_models:$/m, '$& # アバター (VRM)')
+		.replace(/^ {4}background_models:$/m, '$& # 背景 (glTF)')
 		.replace(/^panorama:\n {4}urls:$/m, '$& # 背景で使うパノラマ画像のURL')
 		.replace(/^whiteboard:\n {4}urls:$/m, '$& # ホワイトボードで使用する画像のURL')
 		.replace(/^cue_card:\n {4}urls:$/m, '$& # カンペで使用する画像のURL')
 		.replace(/^mode: /m, '# 起動モード\n$&')
 		.replace(/^allow_direct_view: /m, '# ダイレクトビューモードで凸を受け入れるかどうか\n$&')
 		.replace(/^hide_camera_from_viewers: /m, '# カメラのオブジェクトを視聴者から隠すかどうか\n$&')
+		.replace(/^persistent_object:$/m, '$& # スタジオ内に持ち込む画像のURL')
+		.replace(/^ {4}image_urls:$/m, '$& # 視聴者に見せる')
+		.replace(/^ {4}hidden_image_urls:$/m, '$& # 視聴者に見せない')
 		.replace(/^ {8}- ([0-9]+)$/gm, function (match, number) {
 			var url = 'https://3d.nicovideo.jp/works/td' + number;
 			var comment = '<' + url + '>';
