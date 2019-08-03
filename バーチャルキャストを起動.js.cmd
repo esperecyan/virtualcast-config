@@ -12,12 +12,13 @@ EXIT %errorlevel% */
  * @see {@link https://github.com/esperecyan/virtualcast-config}
  */
 (function () {
+var Shell = WSH.CreateObject('WScript.Shell');
 
 /**
  * 実行ファイルのファイル名。
  * @constant {string}
  */
-var EXE_FILE_NAME = 'VirtualCast.exe';
+var EXE_URL = 'steam://rungameid/947890';
 
 /**
  * config.json の `niconico.charcter_models` に指定できる最大のモデル数。
@@ -26,7 +27,13 @@ var EXE_FILE_NAME = 'VirtualCast.exe';
 var MAX_NICONICO_CHARCTER_MODELS_COUNT = 16;
 
 /**
- * 出力先ファイル名。
+ * 出力先フォルダパス。
+ * @constant {string}
+ */
+var CONFIG_FOLDER_PATH = Shell.ExpandEnvironmentStrings('%USERPROFILE%\\Documents\\My Games\\VirtualCast');
+
+/**
+ * 出力先ファイルパス。
  * @constant {string}
  */
 var OUTPUT_FILE_NAME = 'config.json';
@@ -53,7 +60,6 @@ var DELAY_MILISECONDS = 1000;
 
 
 var FileSystemObject = WSH.CreateObject('Scripting.FileSystemObject');
-var Shell = WSH.CreateObject('WScript.Shell');
 var htmlfile = WSH.CreateObject('htmlfile');
 htmlfile.write('<meta http-equiv="x-ua-compatible" content="IE=Edge" />');
 var JSON = htmlfile.parentWindow.JSON;
@@ -148,15 +154,13 @@ function isValidConfig(config, filename)
 	return true;
 }
 
-var folder = FileSystemObject.GetFolder(FileSystemObject.GetParentFolderName(WSH.ScriptFullName));
+var folder = FileSystemObject.GetFolder(CONFIG_FOLDER_PATH);
 
-var exeFile, outputFile, inputFile;
+var outputFile, inputFile;
 var files = new Enumerator(folder.files);
 for (; !files.atEnd(); files.moveNext()) {
 	var file = files.item();
-	if (file.Name === EXE_FILE_NAME) {
-		exeFile = file;
-	} else if (file.Name === OUTPUT_FILE_NAME) {
+	if (file.Name === OUTPUT_FILE_NAME) {
 		outputFile = file;
 	} else if (INPUT_FILE_NAMES.includes(file.Name)) {
 		if (inputFile) {
@@ -171,16 +175,6 @@ for (; !files.atEnd(); files.moveNext()) {
 			inputFile = file;
 		}
 	}
-}
-
-if (!exeFile) {
-	Shell.Popup(
-		'「' + EXE_FILE_NAME + '」が見つかりません。「' + WSH.ScriptName + '」を同じフォルダに入れる必要があります。',
-		0,
-		WSH.ScriptName,
-		vbOKOnly + vbCritical
-	);
-	return;
 }
 
 if (inputFile) {
@@ -336,11 +330,7 @@ if (inputFile) {
 	return;
 }
 
-var command = '"' + folder.Path + '\\' + EXE_FILE_NAME + '"';
-for (var i = 0, l = WSH.Arguments.length; i < l; i++) {
-	command += ' ' + WSH.Arguments(i);
-}
-Shell.Run(command);
+Shell.Run('explorer ' + EXE_URL);
 })();
 
 
