@@ -6,7 +6,7 @@ EXIT %errorlevel% */
 
 /**
  * @file 「config.yaml」(または config.yml) を「config.json」に変換後、VirtualCast.exe を起動します。
- * @version 1.3.1
+ * @version 2.0.0
  * @license MPL-2.0
  * @author 100の人
  * @see {@link https://github.com/esperecyan/virtualcast-config}
