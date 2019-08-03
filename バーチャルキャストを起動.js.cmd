@@ -51,13 +51,6 @@ var INPUT_FILE_NAMES = ['config.yaml', 'config.yml'];
 var UTF8_BOM_BYTES_LENGTH = 3;
 
 
-/**
- * ニコニ立体からタイトルを取得するときの間隔。
- * @constant {DOMTimeStamp}
- */
-var DELAY_MILISECONDS = 1000;
-
-
 
 var FileSystemObject = WSH.CreateObject('Scripting.FileSystemObject');
 var htmlfile = WSH.CreateObject('htmlfile');
@@ -280,49 +273,10 @@ if (inputFile) {
 		return;
 	}
 
-	var timeoutOccured = false;
-	var yamlString = jsyaml.safeDump(configJSON, {indent: 4, lineWidth: -1})
-		.replace(/^niconico:$/m, '$& # 利用するモデルのニコニ立体番号')
-		.replace(/^ {4}character_models:$/m, '$& # アバター (VRM)')
-		.replace(/^ {4}background_models:$/m, '$& # 背景 (glTF)')
-		.replace(/^panorama:\n {4}urls:$/m, '$& # 背景で使うパノラマ画像のURL')
-		.replace(/^whiteboard:\n {4}urls:$/m, '$& # ホワイトボードで使用する画像のURL')
-		.replace(/^cue_card:\n {4}urls:$/m, '$& # カンペで使用する画像のURL')
-		.replace(/^mode: /m, '# 起動モード\n$&')
-		.replace(/^allow_direct_view: /m, '# ダイレクトビューモードで凸を受け入れるかどうか\n$&')
-		.replace(/^hide_camera_from_viewers: /m, '# カメラのオブジェクトを視聴者から隠すかどうか\n$&')
-		.replace(/^persistent_object:$/m, '$& # スタジオ内に持ち込む画像のURL')
-		.replace(/^ {4}image_urls:$/m, '$& # 視聴者に見せる')
-		.replace(/^ {4}hidden_image_urls:$/m, '$& # 視聴者に見せない')
-		.replace(/^ {8}- ([0-9]+)$/gm, function (match, number) {
-			var url = 'https://3d.nicovideo.jp/works/td' + number;
-			var comment = '<' + url + '>';
-			if (!timeoutOccured) {
-				WSH.Sleep(DELAY_MILISECONDS);
-				var client = WSH.CreateObject('Msxml2.ServerXMLHTTP');
-				client.open('GET', url + '/components.json', false);
-				client.setTimeouts(5000, 5000, 5000, 5000);
-				try {
-					client.send();
-				} catch (e) {
-					timeoutOccured = true;
-				}
-
-				if (client.status === 200) {
-					var components;
-					try {
-						components = JSON.parse(client.responseText);
-					} catch (exception) {
-					}
-					if (components && components.work && components.work.title) {
-						comment = components.work.title + ' ' + comment;
-					}
-				}
-			}
-			return match + ' # ' + comment;
-		});
-
-	putFileContents(INPUT_FILE_NAMES[0], yamlString.replace(/\n/g, '\r\n'));
+	putFileContents(
+		INPUT_FILE_NAMES[0],
+		jsyaml.safeDump(configJSON, {indent: 4, lineWidth: -1}).replace(/\n/g, '\r\n')
+	);
 } else {
 	Shell.Popup([OUTPUT_FILE_NAME].concat(INPUT_FILE_NAMES).map(function (name) {
 		return '「' + name + '」';
