@@ -21,12 +21,6 @@ var Shell = WSH.CreateObject('WScript.Shell');
 var EXE_URL = 'steam://rungameid/947890';
 
 /**
- * config.json の `niconico.charcter_models` に指定できる最大のモデル数。
- * @constant {string}
- */
-var MAX_NICONICO_CHARCTER_MODELS_COUNT = 16;
-
-/**
  * 出力先フォルダパス。
  * @constant {string}
  */
@@ -227,18 +221,6 @@ if (inputFile) {
 
 	if (!isValidConfig(config, inputFile.Name)) {
 		return;
-	}
-
-	if (typeof config.niconico === 'object' && config.niconico !== null
-		&& Array.isArray(config.niconico.character_models)) {
-		var argument = getArgument('--esperecyan-niconico-character-models-offset-16x');
-		if (argument) {
-			var offset = Number.parseInt(argument) * MAX_NICONICO_CHARCTER_MODELS_COUNT;
-			if (config.niconico.character_models.length > offset) {
-				config.niconico.character_models
-					= config.niconico.character_models.concat(config.niconico.character_models.splice(0, offset));
-			}
-		}
 	}
 
 	putFileContents(folder.Path + '\\' + OUTPUT_FILE_NAME, JSON.stringify(config, null, '\t').replace(/\n/g, '\r\n'));

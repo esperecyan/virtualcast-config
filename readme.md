@@ -9,11 +9,6 @@ VirtualCast/config.yaml
 `VirtualCast.exe` があるフォルダに次のような `config.yaml` を置いておくと、
 
 ```yaml
-niconico: # 利用するモデルのニコニ立体番号
-    character_models: # アバター (VRM)
-        - 32797 # ニコニ立体ちゃん (VRM) <https://3d.nicovideo.jp/works/td32797>
-        - 32947 # 【VRM】まついしゃちょー <https://3d.nicovideo.jp/works/td32947>
-        - 36346 # 【VRM】おの副社長 <http://3d.nicovideo.jp/works/td36346>
 panorama:
     urls: # 背景で使うパノラマ画像のURL
         - 'https://www.virtualcast.jp/download/panoramas/IL_entrance.JPG'
@@ -39,13 +34,6 @@ allow_direct_view: true
 
 ```json
 {
-	"niconico": {
-		"character_models": [
-			32797,
-			32947,
-			36346
-		]
-	},
 	"panorama": {
 		"urls": [
 			"https://www.virtualcast.jp/download/panoramas/IL_entrance.JPG",
@@ -95,21 +83,19 @@ allow_direct_view: true
 
 ```yaml
 ---
-niconico:
-    character_models:
-        - 32797
-        - 32806
-        - 32813
+cue_card:
+    urls:
+        - 'https://example.com/cue-card-a-1'
+        - 'https://example.com/cue-card-a-2'
 --- # コメント
-niconico:
-    character_models:
-        - 40000
-        - 40001
-        - 40023
+cue_card:
+    urls:
+        - 'https://example.com/cue-card-b-1'
+        - 'https://example.com/cue-card-b-2'
 ---
-niconico:
-    character_models:
-        - 41036
+cue_card:
+    urls:
+        - 'https://example.com/cue-card-c-1'
 ```
 
 #### `--esperecyan-document-index==0` の場合
@@ -117,11 +103,10 @@ niconico:
 
 ```json
 {
-	"niconico": {
-		"character_models": [
-			32797,
-			32806,
-			32813
+	"cue_card": {
+		"urls": [
+			"https://example.com/cue-card-a-1",
+			"https://example.com/cue-card-a-1"
 		]
 	}
 }
@@ -131,145 +116,10 @@ niconico:
 
 ```json
 {
-	"niconico": {
-		"character_models": [
-			40000,
-			40001,
-			40023
-		]
-	}
-}
-```
-
-### `--esperecyan-niconico-character-models-offset-16x=[数字]`
-`niconico.character_models` の順番をズラします。
-
-例:
-
-```yaml
-niconico:
-    character_models:
-        - 32797
-        - 32806
-        - 32813
-        - 32819
-        - 32830
-        - 32865
-        - 32872
-        - 32876
-        - 32898
-        - 32899
-        - 32928
-        - 32947
-        - 32952
-        - 32969
-        - 33010
-        - 33028
-        - 40000
-        - 40001
-        - 40023
-        - 40051
-        - 40077
-        - 40093
-        - 40258
-        - 40363
-        - 40463
-        - 40480
-        - 40481
-        - 40524
-        - 40567
-        - 40624
-        - 40660
-        - 40677
-        - 41036
-```
-
-#### `--esperecyan-niconico-character-models-offset-16x=0` の場合
-指定しなかった場合と同じ。
-
-#### `--esperecyan-niconico-character-models-offset-16x=1` の場合
-
-```json
-{
-	"niconico": {
-		"character_models": [
-			40000,
-			40001,
-			40023,
-			40051,
-			40077,
-			40093,
-			40258,
-			40363,
-			40463,
-			40480,
-			40481,
-			40524,
-			40567,
-			40624,
-			40660,
-			40677,
-			41036,
-			32797,
-			32806,
-			32813,
-			32819,
-			32830,
-			32865,
-			32872,
-			32876,
-			32898,
-			32899,
-			32928,
-			32947,
-			32952,
-			32969,
-			33010,
-			33028
-		]
-	}
-}
-```
-
-#### `--esperecyan-niconico-character-models-offset-16x=2` の場合
-
-```json
-{
-	"niconico": {
-		"character_models": [
-			41036,
-			32797,
-			32806,
-			32813,
-			32819,
-			32830,
-			32865,
-			32872,
-			32876,
-			32898,
-			32899,
-			32928,
-			32947,
-			32952,
-			32969,
-			33010,
-			33028,
-			40000,
-			40001,
-			40023,
-			40051,
-			40077,
-			40093,
-			40258,
-			40363,
-			40463,
-			40480,
-			40481,
-			40524,
-			40567,
-			40624,
-			40660,
-			40677
+	"cue_card": {
+		"urls": [
+			"https://example.com/cue-card-b-1",
+			"https://example.com/cue-card-b-1"
 		]
 	}
 }
