@@ -5,7 +5,7 @@ REM JScript9.dllをスクリプトエンジンとして指定 <http://inemaru.hatenablog.com/en
 EXIT %errorlevel% */
 
 /**
- * @file 「config.yaml」(または config.yml) を「config.json」に変換後、VirtualCast.exe を起動します。
+ * @file 「プロファイル名_config.yaml」(または プロファイル名_config.yml) を「プロファイル名_config.json」に変換後、VirtualCast.exe を起動します。
  * @version 2.0.0
  * @license MPL-2.0
  * @author 100の人
@@ -25,18 +25,6 @@ var EXE_URL = 'steam://rungameid/947890';
  * @constant {string}
  */
 var CONFIG_FOLDER_PATH = Shell.ExpandEnvironmentStrings('%USERPROFILE%\\Documents\\My Games\\VirtualCast');
-
-/**
- * 出力先ファイルパス。
- * @constant {string}
- */
-var OUTPUT_FILE_NAME = 'config.json';
-
-/**
- * 入力元ファイル名。出力先ファイルをもとに作成する場合は、最初のファイル名を使用。
- * @constant {string}
- */
-var INPUT_FILE_NAMES = ['config.yaml', 'config.yml'];
 
 /**
  * [UTF-8 復号する | Encoding Standard ― 符号化法 標準（日本語訳）]{@link https://triple-underscore.github.io/Encoding-ja.html#utf-8-decode}
@@ -143,127 +131,142 @@ function isValidConfig(config, filename)
 
 var folder = FileSystemObject.GetFolder(CONFIG_FOLDER_PATH);
 
-var outputFile, inputFile;
+var profileNameFilesPairs = { };
 var files = new Enumerator(folder.files);
 for (; !files.atEnd(); files.moveNext()) {
 	var file = files.item();
-	if (file.Name === OUTPUT_FILE_NAME) {
-		outputFile = file;
-	} else if (INPUT_FILE_NAMES.includes(file.Name)) {
-		if (inputFile) {
+	var result = /(.+)_config\.(json|yaml|yml)$/.exec(file.Name);
+	if (!result) {
+		continue;
+	}
+	var profileName = result[1];
+	var extension = result[2];
+
+	if (!(profileName in profileNameFilesPairs)) {
+		profileNameFilesPairs[profileName] = { };
+	}
+
+	if (extension === 'json') {
+		profileNameFilesPairs[profileName].output = file;
+	} else {
+		if (profileNameFilesPairs[profileName].input) {
+			// ファイル名が「.yaml」「.yml」の違いしかないファイルがあれば
 			Shell.Popup(
-				'「' + inputFile.Name + '」「' + file.Name + '」のいずれも存在しています。どちらか一つである必要があります。',
+				'「' + profileName + '_config.yaml」「' + profileName + '_config.yml」のいずれも存在しています。どちらか一つである必要があります。',
 				0,
 				WSH.ScriptName,
 				vbOKOnly + vbCritical
 			);
 			return;
-		} else {
-			inputFile = file;
 		}
+		profileNameFilesPairs[profileName].input = file;
 	}
 }
 
-if (inputFile) {
-	// config.yaml → config.json
-	if ((outputFile || folder).Attributes & ReadOnly) {
-		Shell.Popup(
-			outputFile
-				? '「' + outputFile.Name + '」を上書きする権限がありません。'
-				: '「' + folder.Name + '」フォルダにファイルを作成する権限がないため、「' + OUTPUT_FILE_NAME + '」を作成できません。',
-			0,
-			WSH.ScriptName,
-			vbOKOnly + vbCritical
-		);
-		return;
-	}
-
-	var yaml = getFileContents(inputFile.Path);
-
-	var configs;
-	try {
-		configs = jsyaml.safeLoadAll(yaml, null, {filename: inputFile.Path});
-	} catch (exception) {
-		if (exception.name === 'YAMLException') {
-			var errorMessage = '「' + inputFile.Name + '」は壊れています。以下のエラーが発生しました。';
-			if (outputFile) {
-				errorMessage += '「' + inputFile.Name + '」を削除、または名前の変更を行えば、'
-					+ '次回起動時に「' + outputFile.name + '」の内容をもとに「' + INPUT_FILE_NAMES[0] + '」を作成します。';
-			}
-			Shell.Popup(
-				errorMessage + '\n\n' + exception.name + ': ' + exception.message,
-				0,
-				WSH.ScriptName,
-				vbOKOnly + vbCritical
-			);
-			return;
-		} else {
-			throw exception;
-		}
-	}
-
-	var config = configs[0];
-	var argument = getArgument('--esperecyan-document-index');
-	if (argument) {
-		var index = Number.parseInt(argument);
-		if (configs.length <= index) {
-			Shell.Popup(
-				inputFile.Name + 'には' + configs.length + '個のYAMLドキュメントが含まれているので、'
-					+ '--esperecyan-document-index には0～' + (configs.length - 1) + 'を指定する必要があります。',
-				0,
-				WSH.ScriptName,
-				vbOKOnly + vbCritical
-			);
-			return;
-		}
-		config = configs[index];
-	}
-
-	if (!isValidConfig(config, inputFile.Name)) {
-		return;
-	}
-
-	putFileContents(folder.Path + '\\' + OUTPUT_FILE_NAME, JSON.stringify(config, null, '\t').replace(/\n/g, '\r\n'));
-} else if (outputFile) {
-	// config.json → config.yaml
-	if (folder.Attributes & ReadOnly) {
-		Shell.Popup(
-			'「' + folder.Name + '」フォルダにファイルを作成する権限がないため、「' + INPUT_FILE_NAMES[0] + '」を作成できません。',
-			0,
-			WSH.ScriptName,
-			vbOKOnly + vbCritical
-		);
-		return;
-	}
-
-	var json = getFileContents(outputFile.Path);
-
-	var configJSON;
-	try {
-		configJSON = JSON.parse(json);
-	} catch (exception) {
-		Shell.Popup(
-			'「' + outputFile.Name + '」は壊れています。以下のエラーが発生しました。\n\n' + exception.name + ': ' + exception.message,
-			0,
-			WSH.ScriptName,
-			vbOKOnly + vbCritical
-		);
-		return;
-	}
-
-	if (!isValidConfig(configJSON, outputFile.Name)) {
-		return;
-	}
-
-	putFileContents(
-		INPUT_FILE_NAMES[0],
-		jsyaml.safeDump(configJSON, {indent: 4, lineWidth: -1}).replace(/\n/g, '\r\n')
-	);
-} else {
-	Shell.Popup([OUTPUT_FILE_NAME].concat(INPUT_FILE_NAMES).map(function (name) {
-		return '「' + name + '」';
-	}) + 'のいずれも見つかりません。', 0, WSH.ScriptName, vbOKOnly + vbCritical);
+if (Object.keys(profileNameFilesPairs).length === 0) {
+	Shell.Popup(CONFIG_FOLDER_PATH + ' に、「_config」を含むファイルは見つかりません。', 0, WSH.ScriptName, vbOKOnly + vbCritical);
 	return;
+}
+
+for (var profileName in profileNameFilesPairs) {
+	var files = profileNameFilesPairs[profileName];
+	if (files.input) {
+		// config.yaml → config.json
+		var outputFileName = profileName + '_config.json';
+		if ((files.output || folder).Attributes & ReadOnly) {
+			Shell.Popup(
+				files.output
+					? '「' + files.output.Name + '」を上書きする権限がありません。'
+					: '「' + folder.Name + '」フォルダにファイルを作成する権限がないため、「' + outputFileName + '」を作成できません。',
+				0,
+				WSH.ScriptName,
+				vbOKOnly + vbCritical
+			);
+			return;
+		}
+
+		var yaml = getFileContents(files.input);
+
+		var configs;
+		try {
+			configs = jsyaml.safeLoadAll(yaml, null, {filename: files.input.Path});
+		} catch (exception) {
+			if (exception.name === 'YAMLException') {
+				var errorMessage = '「' + files.input.Name + '」は壊れています。以下のエラーが発生しました。';
+				if (files.output) {
+					errorMessage += '「' + files.input.Name + '」を削除、または名前の変更を行えば、'
+						+ '次回起動時に「' + files.output.Name + '」の内容をもとに「' + profileName + '_config.yaml」を作成します。';
+				}
+				Shell.Popup(
+					errorMessage + '\n\n' + exception.name + ': ' + exception.message,
+					0,
+					WSH.ScriptName,
+					vbOKOnly + vbCritical
+				);
+				return;
+			} else {
+				throw exception;
+			}
+		}
+
+		var config = configs[0];
+		var argument = getArgument('--esperecyan-document-index');
+		if (argument) {
+			var index = Number.parseInt(argument);
+			if (configs.length <= index) {
+				Shell.Popup(
+					files.input.Name + 'には' + configs.length + '個のYAMLドキュメントが含まれているので、'
+						+ '--esperecyan-document-index には0～' + (configs.length - 1) + 'を指定する必要があります。',
+					0,
+					WSH.ScriptName,
+					vbOKOnly + vbCritical
+				);
+				return;
+			}
+			config = configs[index];
+		}
+
+		if (!isValidConfig(config, files.input.Name)) {
+			return;
+		}
+
+		putFileContents(folder.Path + '\\' + profileName + '_config.json', JSON.stringify(config, null, '\t').replace(/\n/g, '\r\n'));
+	} else {
+		// config.json → config.yaml
+		if (folder.Attributes & ReadOnly) {
+			Shell.Popup(
+				'「' + folder.Name + '」フォルダにファイルを作成する権限がないため、「' + profileName + '_config.yaml」を作成できません。',
+				0,
+				WSH.ScriptName,
+				vbOKOnly + vbCritical
+			);
+			return;
+		}
+
+		var json = getFileContents(files.output.Path);
+
+		var configJSON;
+		try {
+			configJSON = JSON.parse(json);
+		} catch (exception) {
+			Shell.Popup(
+				'「' + files.output.Name + '」は壊れています。以下のエラーが発生しました。\n\n' + exception.name + ': ' + exception.message,
+				0,
+				WSH.ScriptName,
+				vbOKOnly + vbCritical
+			);
+			return;
+		}
+
+		if (!isValidConfig(configJSON, files.output.Name)) {
+			return;
+		}
+
+		putFileContents(
+			profileName + '_config.yaml',
+			jsyaml.safeDump(configJSON, {indent: 4, lineWidth: -1}).replace(/\n/g, '\r\n')
+		);
+	}
 }
 
 Shell.Run('explorer ' + EXE_URL);
@@ -3019,6 +3022,20 @@ if (!String.prototype.startsWith) {
 		return this.substr(!pos || pos < 0 ? 0 : +pos, search.length) === search;
 	};
 }
+
+/**
+ * @see [String.prototype.endsWith() - JavaScript | MDN]{@link
+ *      https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith#Polyfill}
+ * @license CC0-1.0 AND MIT (いずれであるか不明、おそらくCC0-1.0)
+ */
+ if (!String.prototype.endsWith) {
+	String.prototype.endsWith = function(search, this_len) {
+	  if (this_len === undefined || this_len > this.length) {
+		this_len = this.length;
+	  }
+	  return this.substring(this_len - search.length, this_len) === search;
+	};
+  }
 
 if (!Number.parseInt) {
 	Number.parseInt = parseInt;
