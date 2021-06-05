@@ -1,0 +1,12 @@
+[*]
+end_of_line = lf
+charset = utf-8
+indent_style = tab
+indent_size = 4
+guidelines = 120
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.js.cmd]
+end_of_line = crlf
+charset = shift_jis
