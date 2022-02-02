@@ -76,6 +76,18 @@ allow_direct_view: true
 
 起動オプション
 --------------
+### `--esperecyan-disable-eye-lip-tracking`
+VIVEのアイトラッキング、リップトラッキングを無効化します。
+
+JSONへの変換時に次のプロパティを削除します。
+- `enable_vivesranipal_eye`
+- `enable_vivesranipal_blink`
+- `enable_vivesranipal_eye_with_emotion`
+- `enable_vivesranipal_lip`
+
+VirtualCast 2.1.5e (2022-01-20) 現在、VIVE Pro Eye以外を接続している場合、VIVEのアイトラッキングを有効にしていると、VirtualCastがフリーズし、OSの再起動が必要になる不具合があります。
+https://virtualcast.jp/blog/2022/01/0126_shinchoku/
+
 ### `--esperecyan-document-index=[数字]` (0から始まる整数)
 一つのファイル内に複数のYAMLドキュメントが埋め込まれていた場合、読み込むドキュメントを切り替えます。
 

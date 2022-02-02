@@ -97,16 +97,20 @@ function putFileContents(path, contents)
 /**
  * 指定されたコマンドライン引数名の値を取得します。
  * @param {string} name
- * @returns {string}
+ * @returns {?(string|true)}
  */
 function getArgument(name)
 {
 	for (var i = 0, l = WSH.Arguments.length; i < l; i++) {
-		if (WSH.Arguments(i).startsWith(name + '=')) {
+		var argument = WSH.Arguments(i);
+		if (argument === name) {
+			return true;
+		}
+		if (argument.startsWith(name + '=')) {
 			return WSH.Arguments(i).replace(name + '=', '');
 		}
 	}
-	return '';
+	return null;
 }
 
 /**
@@ -224,6 +228,13 @@ for (var profileName in profileNameFilesPairs) {
 				return;
 			}
 			config = configs[index];
+		}
+
+		if (getArgument('--esperecyan-disable-eye-lip-tracking')) {
+			delete config.enable_vivesranipal_eye;
+			delete config.enable_vivesranipal_blink;
+			delete config.enable_vivesranipal_eye_with_emotion;
+			delete config.enable_vivesranipal_lip;
 		}
 
 		if (!isValidConfig(config, files.input.Name)) {
