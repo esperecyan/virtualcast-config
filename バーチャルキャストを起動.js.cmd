@@ -366,7 +366,7 @@ function polyfill()
 
     var isRegex; /* inlined from https://npmjs.com/is-regex */ var regexExec = RegExp.prototype.exec, tryRegexExec = function tryRegexExec(value) { try { regexExec.call(value); return true; } catch (e) { return false; } }, regexClass = '[object RegExp]'; isRegex = function isRegex(value) { if (typeof value !== 'object') { return false; } return hasToStringTag ? tryRegexExec(value) : to_string.call(value) === regexClass; };
     var isString; /* inlined from https://npmjs.com/is-string */ var strValue = String.prototype.valueOf, tryStringObject = function tryStringObject(value) { try { strValue.call(value); return true; } catch (e) { return false; } }, stringClass = '[object String]'; isString = function isString(value) { if (typeof value === 'string') { return true; } if (typeof value !== 'object') { return false; } return hasToStringTag ? tryStringObject(value) : to_string.call(value) === stringClass; };
-    /* eslint-enable one-var-declaration-per-line, no-redeclare, max-statements-per-line */
+    /* eslint-enable one-var-declaration-per-line */
 
     /* inlined from http://npmjs.com/define-properties */
     var supportsDescriptors = $Object.defineProperty && (function () {
@@ -2451,7 +2451,7 @@ function polyfill()
         defineSetter = call.bind(prototypeOfObject.__defineSetter__);
         lookupGetter = call.bind(prototypeOfObject.__lookupGetter__);
         lookupSetter = call.bind(prototypeOfObject.__lookupSetter__);
-        /* eslint-enable no-underscore-dangle, no-restricted-properties */
+        /* eslint-enable no-restricted-properties */
     }
 
     var isPrimitive = function isPrimitive(o) {
