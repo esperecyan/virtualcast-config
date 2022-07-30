@@ -137,6 +137,40 @@ cue_card:
 }
 ```
 
+その他の機能
+------------
+### ニコニコ動画マイリストの展開
+`import.video_playlist_uris` にニコニコ動画の公開マイリストのURLが含まれている場合、マイリストに含まれる動画のURLを取得して `import.video_content_uris` へ追加します。
+
+```yaml
+import:
+    video_content_uris:
+        - https://www.nicovideo.jp/watch/sm15633620
+        - https://www.youtube.com/watch?v=KGt5WvFeMkw
+    video_playlist_uris:
+        - https://www.youtube.com/watch?v=4OUyE9YPRyA
+        - https://www.nicovideo.jp/user/89622028/mylist/70543272
+```
+
+```json
+{
+	"import": {
+		"video_content_uris": [
+			"https://www.nicovideo.jp/watch/sm15633620",
+			"https://www.youtube.com/watch?v=KGt5WvFeMkw",
+			"http://www.nicovideo.jp/watch/sm38277590?ref=rss_mylist_rss2",
+			"http://www.nicovideo.jp/watch/sm38277453?ref=rss_mylist_rss2",
+			"http://www.nicovideo.jp/watch/sm38277122?ref=rss_mylist_rss2",
+			"http://www.nicovideo.jp/watch/sm38276808?ref=rss_mylist_rss2"
+		],
+		"video_playlist_uris": [
+			"https://www.youtube.com/watch?v=4OUyE9YPRyA",
+			"https://www.nicovideo.jp/user/89622028/mylist/70543272"
+		]
+	}
+}
+```
+
 Contribution
 ------------
 Pull Request、または Issue よりお願いいたします。

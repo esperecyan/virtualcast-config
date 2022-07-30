@@ -277,6 +277,38 @@ for (var profileName in profileNameFilesPairs) { //eslint-disable-line no-redecl
 			return;
 		}
 
+		// ニコニコ動画マイリストの展開
+		if (typeof config['import'] === 'object' && config['import'] !== null
+			&& Array.isArray(config['import'].video_playlist_uris)) {
+			if (!Array.isArray(config['import'].video_content_uris)) {
+				config['import'].video_content_uris = [ ];
+			}
+
+			config['import'].video_playlist_uris.forEach(function (videoPlaylistURL) {
+				var result = /^https:\/\/www\.nicovideo\.jp\/.*mylist\/([0-9]+)/.exec(videoPlaylistURL);
+				if (!result) {
+					return;
+				}
+
+				/** @type {XMLHttpRequest} */
+				var request = WSH.CreateObject('MSXML2.ServerXMLHTTP');
+				request.open('GET', 'https://www.nicovideo.jp/mylist/' + result[1] + '?rss=2.0', false);
+				request.send();
+				if (request.status !== 200) {
+					return;
+				}
+
+				var doc = WSH.CreateObject('MSXML2.DOMDocument');
+				doc.loadXML(request.responseText);
+				Array.prototype.push.apply(
+					config['import'].video_content_uris,
+					Array.prototype.map.call(doc.getElementsByTagName('item'), function (item) {
+						return item.getElementsByTagName('link')[0].text;
+					})
+				);
+			});
+		}
+
 		putFileContents(
 			profileName + '_config.yaml',
 			jsyaml.safeDump(configJSON, {indent: 4, lineWidth: -1}).replace(/\n/g, '\r\n')
