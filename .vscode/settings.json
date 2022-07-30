@@ -2,5 +2,8 @@
 	"eslint.alwaysShowStatus": true,
 	"files.associations": {
 		"*.js.cmd": "javascript"
+	},
+	"[javascript]": {
+		"files.encoding": "shiftjis"
 	}
 }
