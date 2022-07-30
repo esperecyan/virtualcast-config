@@ -6,7 +6,7 @@ EXIT %errorlevel% */
 
 /**
  * @file 「プロファイル名_config.yaml」(または プロファイル名_config.yml) を「プロファイル名_config.json」に変換後、VirtualCast.exe を起動します。
- * @version 4.0.0
+ * @version 4.0.1
  * @license MPL-2.0
  * @author 100の人
  * @see {@link https://github.com/esperecyan/virtualcast-config}
