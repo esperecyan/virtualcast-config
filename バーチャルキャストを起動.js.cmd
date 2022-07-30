@@ -27,7 +27,8 @@ var EXE_URL = 'steam://rungameid/947890';
 var CONFIG_FOLDER_PATH = Shell.ExpandEnvironmentStrings('%USERPROFILE%\\Documents\\My Games\\VirtualCast');
 
 /**
- * [UTF-8 復号する | Encoding Standard ― 符号化法 標準（日本語訳）]{@link https://triple-underscore.github.io/Encoding-ja.html#utf-8-decode}
+ * [UTF-8 復号する | Encoding Standard ― 符号化法 標準（日本語訳）]
+ * 	{@link https://triple-underscore.github.io/Encoding-ja.html#utf-8-decode}
  * @constant {number}
  */
 var UTF8_BOM_BYTES_LENGTH = 3;
@@ -70,7 +71,8 @@ function getFileContents(path)
  * 指定したファイルへ文字列を書き込みます。
  *
  * ファイルが既に存在する場合は上書きします。
- * @see [ADODB.Stream で BOM なし UTF-8 のテキストファイルを書き出す ― Corredor]{@link http://neos21.hatenablog.com/entry/2016/03/27/231512}
+ * @see [ADODB.Stream で BOM なし UTF-8 のテキストファイルを書き出す ― Corredor]
+ * 	{@link http://neos21.hatenablog.com/entry/2016/03/27/231512}
  * @param {string} path
  * @param {string} contents
  * @returns {void}
@@ -172,8 +174,8 @@ if (Object.keys(profileNameFilesPairs).length === 0) {
 	return;
 }
 
-for (var profileName in profileNameFilesPairs) {
-	var files = profileNameFilesPairs[profileName];
+for (var profileName in profileNameFilesPairs) { //eslint-disable-line no-redeclare
+	var files = profileNameFilesPairs[profileName]; //eslint-disable-line no-redeclare
 	if (files.input) {
 		// config.yaml → config.json
 		var outputFileName = profileName + '_config.json';
@@ -241,7 +243,9 @@ for (var profileName in profileNameFilesPairs) {
 			return;
 		}
 
-		putFileContents(folder.Path + '\\' + profileName + '_config.json', JSON.stringify(config, null, '\t').replace(/\n/g, '\r\n'));
+		putFileContents(
+			folder.Path + '\\' + profileName + '_config.json', JSON.stringify(config, null, '\t').replace(/\n/g, '\r\n')
+		);
 	} else {
 		// config.json → config.yaml
 		if (folder.Attributes & ReadOnly) {
