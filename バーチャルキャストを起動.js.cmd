@@ -310,7 +310,7 @@ for (var profileName in profileNameFilesPairs) { //eslint-disable-line no-redecl
 		}
 
 		putFileContents(
-			profileName + '_config.yaml',
+			folder.Path + '\\' + profileName + '_config.yaml',
 			jsyaml.safeDump(configJSON, {indent: 4, lineWidth: -1}).replace(/\n/g, '\r\n')
 		);
 	}
