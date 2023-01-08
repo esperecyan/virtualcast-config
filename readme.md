@@ -110,7 +110,7 @@ cue_card:
         - 'https://example.com/cue-card-c-1'
 ```
 
-#### `--esperecyan-document-index==0` の場合
+#### `--esperecyan-document-index=0` の場合
 指定しなかった場合と同じ。
 
 ```json
@@ -124,7 +124,7 @@ cue_card:
 }
 ```
 
-#### `--esperecyan-document-index==1` の場合
+#### `--esperecyan-document-index=1` の場合
 
 ```json
 {
