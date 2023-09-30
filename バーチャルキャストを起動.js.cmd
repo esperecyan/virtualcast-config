@@ -21,6 +21,12 @@ var Shell = WSH.CreateObject('WScript.Shell');
 var EXE_URL = 'steam://rungameid/947890';
 
 /**
+ * 実行ファイルのパス。
+ * @constant {string}
+ */
+var EXE_PATH = 'C:\\Program Files (x86)\\Steam\\steamapps\\common\\VirtualCast\\VirtualCast.exe';
+
+/**
  * 出力先フォルダパス。
  * @constant {string}
  */
@@ -316,7 +322,16 @@ for (var profileName in profileNameFilesPairs) { //eslint-disable-line no-redecl
 	}
 }
 
-Shell.Run('explorer ' + EXE_URL);
+var parametersForVirutalCastExisted = false;
+var command = '"' + EXE_PATH + '"';
+for (var i = 0, l = WSH.Arguments.length; i < l; i++) {
+	var arg = WSH.Arguments(i);
+	if (arg === '-p') {
+		parametersForVirutalCastExisted = true;
+	}
+	command += ' ' + arg;
+}
+Shell.Run(parametersForVirutalCastExisted ? command : 'explorer ' + EXE_URL);
 })();
 
 
