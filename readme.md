@@ -65,14 +65,14 @@ allow_direct_view: true
 ------
 ![](demo.gif)
 
-1. [バーチャルキャストを起動.js.cmd]を好きなフォルダに保存します。
-2. `バーチャルキャストを起動.js.cmd` をダブルクリックして実行します。
+1. [バーチャルキャストを起動.js]を好きなフォルダに保存します。
+2. `バーチャルキャストを起動.js` をダブルクリックして実行します。
 3. `default_config.json` の内容をもとに `default_config.yaml` が作成された後、バーチャルキャストが起動します。
 4. `default_config.yaml` が存在する場合、変換して `default_config.json` に上書き保存され、その後バーチャルキャストが起動します。
-5. `VirtualCast.exe` を直接起動する代わりに、常に `バーチャルキャストを起動.js.cmd` からバーチャルキャストを起動するようにしておくと、
+5. `VirtualCast.exe` を直接起動する代わりに、常に `バーチャルキャストを起動.js` からバーチャルキャストを起動するようにしておくと、
    `default_config.json` の更新を意識せずにすむため便利です。
 
-[バーチャルキャストを起動.js.cmd]: https://esperecyan.github.io/virtualcast-config/%E3%83%90%E3%83%BC%E3%83%81%E3%83%A3%E3%83%AB%E3%82%AD%E3%83%A3%E3%82%B9%E3%83%88%E3%82%92%E8%B5%B7%E5%8B%95.js.cmd
+[バーチャルキャストを起動.js]: https://esperecyan.github.io/virtualcast-config/%E3%83%90%E3%83%BC%E3%83%81%E3%83%A3%E3%83%AB%E3%82%AD%E3%83%A3%E3%82%B9%E3%83%88%E3%82%92%E8%B5%B7%E5%8B%95.js
 
 起動オプション
 --------------

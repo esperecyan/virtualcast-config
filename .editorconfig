@@ -10,6 +10,6 @@ insert_final_newline = true
 [*.yaml]
 indent_style = space
 
-[*.js.cmd]
+[*.js]
 end_of_line = crlf
 charset = shift_jis

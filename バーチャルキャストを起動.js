@@ -1,8 +1,4 @@
-REM = 0;/* -*- mode: javascript; coding: Shift_JIS -*-
-ECHO off&cls&title %‾n0
-REM JScript9.dllをスクリプトエンジンとして指定 <http://inemaru.hatenablog.com/entry/2018/04/05/055557>
-%windir%¥System32¥wscript.exe //nologo //E:{16d51579-a30b-4c8b-a276-0ff4dc41e755} "%‾f0" %*
-EXIT %errorlevel% */
+// -*- coding: Shift_JIS -*-
 
 /**
  * @file 「プロファイル名_config.yaml」(または プロファイル名_config.yml) を「プロファイル名_config.json」に変換後、VirtualCast.exe を起動します。
