@@ -13,7 +13,6 @@ rules:
     no-var: off
 
     strict: ['warn', 'never']
-    linebreak-style: ['error', 'windows']
 
     new-cap: off
     comma-dangle: ['warn', {arrays: always-multiline, objects: always-multiline}]

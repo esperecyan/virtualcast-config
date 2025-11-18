@@ -1,2 +1,2 @@
 * text=auto eol=lf encoding=utf-8
-*.js text eol=crlf encoding=sjis working-tree-encoding=sjis
+*.js text eol=lf encoding=sjis working-tree-encoding=sjis

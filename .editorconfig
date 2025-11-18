@@ -11,5 +11,4 @@ insert_final_newline = true
 indent_style = space
 
 [*.js]
-end_of_line = crlf
 charset = shift_jis
