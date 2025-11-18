@@ -183,8 +183,10 @@ JavaScriptオブジェクトとYAML文字列の相互変換に次のライブラ
 
 - [js-yaml] — [MIT License]
 - [es5-shim] — [MIT License]
+- [JSON 3] — [MIT License]
 
 [Mozilla Public License Version 2.0]: https://www.mozilla.org/MPL/2.0/
 [js-yaml]: https://github.com/nodeca/js-yaml
 [es5-shim]: https://github.com/es-shims/es5-shim
+[JSON 3]: https://github.com/bestiejs/json3
 [MIT License]: https://ja.osdn.net/projects/opensource/wiki/licenses/MIT_license
