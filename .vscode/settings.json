@@ -1,5 +1,4 @@
 {
-	"eslint.alwaysShowStatus": true,
 	"[javascript]": {
 		"files.encoding": "shiftjis"
 	}
