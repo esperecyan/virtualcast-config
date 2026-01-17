@@ -319,7 +319,7 @@ var parametersForVirutalCastExisted = false;
 var command = '"' + EXE_PATH + '"';
 for (var i = 0, l = WSH.Arguments.length; i < l; i++) {
 	var arg = WSH.Arguments(i);
-	if (arg === '-p') {
+	if (arg === '-p' || arg === '--playMode') {
 		parametersForVirutalCastExisted = true;
 	}
 	command += ' ' + arg;
