@@ -1,6 +1,6 @@
 VirtualCast/config.yaml
 =======================
-`プロファイル名_config.yaml` (または `プロファイル名_config.yml`) を `プロファイル名_config.json` に変換後、VirtualCast.exe を起動する[WSH]スクリプトです。
+`プロファイル名_config.yaml` (または `プロファイル名_config.yml`) を `プロファイル名_config.json` へ変換後、VirtualCastを起動する[WSH]スクリプトです。
 
 [WSH]: https://ja.wikipedia.org/wiki/Windows_Script_Host "Windows Script Hostとは、Microsoft Windowsにおいてテキストファイルに記述したスクリプトを実行するスクリプト実行環境である。"
 
